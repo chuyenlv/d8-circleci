@@ -52,7 +52,8 @@ rsync_repos() {
   rm -f $HOME/pantheon/web/sites/default/settings.local.php
   rm -f $HOME/pantheon/web/sites/default/services.local.yml
 
-  cp $CIRCLE_WORKING_DIRECTORY/pantheon.yml .
+  cp $CIRCLE_WORKING_DIRECTORY/scripts/templates/.gitignore .
+  cp $CIRCLE_WORKING_DIRECTORY/scripts/templates/pantheon.yml .
   cp $CIRCLE_WORKING_DIRECTORY/composer.* .
 }
 
@@ -63,5 +64,5 @@ terminus_login_pantheon() {
 }
 
 create_backup() {
-  terminus backup:create "${PANTHEON_SITE_UUID}.dev"
+  terminus backup:create "${PANTHEON_SITE_NAME}.dev"
 }
