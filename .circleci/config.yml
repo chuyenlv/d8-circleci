@@ -31,9 +31,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "composer.json" }}
-            - v1-dependencies-
+          key: composer-cache
       - run:
           name: Set git config
           command: |
@@ -54,7 +52,11 @@ jobs:
           name: Run composer for project
           command: ./scripts/circleci/build.sh
       - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
+          key: composer-cache
+          paths:
+            - ~/.composer/cache
+      - save_cache:
+          key: cache-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/.ssh
             - ~/.gitconfig
@@ -67,7 +69,7 @@ jobs:
       - restore_cache:
           keys:
             - cache-{{ .Environment.CIRCLE_SHA1 }}
-            - composer-cache
+            - terminus-cache
       - checkout:
           path: /home/circleci/d8-circleci
       - run: echo 'StrictHostKeyChecking no' > ~/.ssh/config
@@ -76,9 +78,8 @@ jobs:
           name: Install Terminus
           command: ./scripts/circleci/install_terminus.sh
       - save_cache:
-          key: composer-cache
+          key: terminus-cache
           paths:
-            - ~/.composer/cache
             - ~/terminus
             - ~/.terminus/tokens
       - run:
