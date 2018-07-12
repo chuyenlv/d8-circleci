@@ -1,4 +1,5 @@
 init: &init
+  working_directory: /home/circleci/project
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     DEBUG: "true"
@@ -12,7 +13,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-         docker_layer_caching: true
+        docker_layer_caching: true
       - restore_cache:
           key: coder-cache
       - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
@@ -32,7 +33,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-         docker_layer_caching: true
+        docker_layer_caching: true
       - restore_cache:
           key: composer-cache
       - run:
@@ -71,7 +72,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-         docker_layer_caching: true
+        docker_layer_caching: true
       - restore_cache:
           keys:
             - cache-{{ .Environment.CIRCLE_SHA1 }}
