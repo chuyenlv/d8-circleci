@@ -1,0 +1,45 @@
+# Ignore Drupal's file directory
+web/sites/*/files
+
+# Place local settings
+!web/sites/default/services.yml
+!web/sites/default/example.*
+web/sites/default/services.local.yml
+web/sites/default/settings.pantheon.php
+web/sites/default/settings.local.php
+web/sites/default/default.*
+web/sites/development.services.yml
+web/sites/example.*
+
+web/core
+web/modules/contrib
+web/themes/contrib
+web/libraries
+web/profiles
+web/drush
+web/autoload.php
+web/index.php
+web/update.php
+web/.ht.router.php
+web/.gitattributes
+web/.htaccess
+vendor
+
+!web/modules/custom
+!web/themes/custom
+
+# Packages #
+*.7z
+*.dmg
+*.gz
+*.bz2
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.tgz
+
+# Logs and databases #
+*.log
+*.sql

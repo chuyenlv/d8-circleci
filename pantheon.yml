@@ -1,0 +1,23 @@
+api_version: 1
+web_docroot: true
+php_version: 7.1
+
+workflows:
+  deploy:
+    after:
+      -
+        type: webphp
+        description: Run import configuration from .yml files when deploy code
+        script: private/scripts/drush_config_import.php
+
+  sync_code:
+    after:
+      - type: webphp
+        description: Run import configuration from .yml files when sync code
+        script: private/scripts/drush_config_import.php
+
+  clone_database:
+    after:
+      - type: webphp
+        description: Run import configuration from .yml files when clone database
+        script: private/scripts/drush_config_import.php

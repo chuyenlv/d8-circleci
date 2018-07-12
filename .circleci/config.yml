@@ -1,0 +1,107 @@
+init: &init
+  working_directory: /home/circleci/d8-circleci
+  environment:
+    TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    DEBUG: "true"
+  docker:
+    - image: circleci/php:7.1
+
+version: 2
+jobs:
+  code-sniffers:
+    <<: *init
+    steps:
+      - checkout
+      - restore_cache:
+          key: coder-cache
+      - run:
+          name: Set git config
+          command: |
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_USER
+      - run:
+          name: Install GD Extension
+          command: |
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+      - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Install Coder Sniffer
+          command: ./scripts/circleci/install_coder_sniffer.sh
+      - save_cache:
+          key: coder-cache
+          paths:
+            - ~/coder
+      - run:
+          name: Run Sniffer
+          command: ./scripts/circleci/phpcs.sh
+
+  build:
+    <<: *init
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ .Environment.CIRCLE_SHA1 }}
+            - composer-v1-{{ checksum "composer.lock" }}
+      - run:
+          name: Set git config
+          command: |
+            git config --global user.email $GIT_EMAIL
+            git config --global user.name $GIT_USER
+      - run:
+          name: Increase memory
+          command: |
+            sudo touch $PHP_INI_DIR/php.ini
+            echo "memory_limit = 512M" | sudo tee -a $PHP_INI_DIR/php.ini
+      - run:
+          name: Run composer for project
+          command: ./scripts/circleci/build.sh
+      - save_cache:
+          keys:
+            - cache-{{ .Environment.CIRCLE_SHA1 }}
+            - composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - ~/.ssh
+            - ~/.gitconfig
+            - vendor
+            - web
+
+  deploy-pantheon:
+    <<: *init
+    steps:
+      - restore_cache:
+          keys:
+            - cache-{{ .Environment.CIRCLE_SHA1 }}
+            - composer-cache
+      - checkout:
+          path: /home/circleci/d8-circleci
+      - run: echo 'StrictHostKeyChecking no' > ~/.ssh/config
+      - run: echo 'export PATH=$HOME/terminus/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Install Terminus
+          command: ./scripts/circleci/install_terminus.sh
+      - save_cache:
+          key: composer-cache
+          paths:
+            - ~/.composer/cache
+            - ~/terminus
+            - ~/.terminus/tokens
+      - run:
+          command: ./scripts/circleci/deploy_to_pantheon.sh
+
+workflows:
+  version: 2
+  multi-build-flow:
+    jobs:
+      - code-sniffers
+      - build:
+          requires:
+            - code-sniffers
+      - deploy-pantheon:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
