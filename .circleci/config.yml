@@ -14,16 +14,6 @@ jobs:
       - checkout
       - restore_cache:
           key: coder-cache
-      - run:
-          name: Set git config
-          command: |
-            git config --global user.email $GIT_EMAIL
-            git config --global user.name $GIT_USER
-      - run:
-          name: Install GD Extension
-          command: |
-            sudo apt-get install -y libpng-dev
-            sudo docker-php-ext-install gd
       - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
       - run:
           name: Install Coder Sniffer
@@ -49,6 +39,12 @@ jobs:
           command: |
             git config --global user.email $GIT_EMAIL
             git config --global user.name $GIT_USER
+      - run:
+          name: Install GD Extension
+          command: |
+            sudo apt-get install -y libpng-dev
+            sudo docker-php-ext-install gd
+      - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
       - run:
           name: Increase memory
           command: |
