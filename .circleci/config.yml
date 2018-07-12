@@ -35,8 +35,8 @@ jobs:
       - run:
           name: Set git config
           command: |
-            git config --global user.email $GIT_EMAIL
-            git config --global user.name $GIT_USER
+            git config --global user.email "$GIT_EMAIL"
+            git config --global user.name "$GIT_USER"
       - run:
           name: Install GD Extension
           command: |
