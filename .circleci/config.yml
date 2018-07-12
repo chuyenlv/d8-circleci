@@ -11,6 +11,8 @@ jobs:
     <<: *init
     steps:
       - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
       - restore_cache:
           key: coder-cache
       - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
@@ -29,6 +31,8 @@ jobs:
     <<: *init
     steps:
       - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
       - restore_cache:
           key: composer-cache
       - run:
@@ -66,6 +70,8 @@ jobs:
     <<: *init
     steps:
       - checkout
+      - setup_remote_docker:
+         docker_layer_caching: true
       - restore_cache:
           keys:
             - cache-{{ .Environment.CIRCLE_SHA1 }}
