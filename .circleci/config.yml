@@ -32,8 +32,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - cache-{{ .Environment.CIRCLE_SHA1 }}
-            - composer-v1-{{ checksum "composer.lock" }}
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
       - run:
           name: Set git config
           command: |
@@ -54,9 +54,7 @@ jobs:
           name: Run composer for project
           command: ./scripts/circleci/build.sh
       - save_cache:
-          keys:
-            - cache-{{ .Environment.CIRCLE_SHA1 }}
-            - composer-v1-{{ checksum "composer.lock" }}
+          key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - ~/.ssh
             - ~/.gitconfig
