@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd scripts/ci
+cd scripts/circleci
 source functions.sh
 
 echo -e "\n${txtgrn}Pushing the master branch to Bitbucket Upstream ${txtrst}"
