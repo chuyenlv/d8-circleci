@@ -1,5 +1,4 @@
 init: &init
-  working_directory: /home/circleci/d8-circleci
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     DEBUG: "true"
@@ -66,12 +65,11 @@ jobs:
   deploy-pantheon:
     <<: *init
     steps:
+      - checkout
       - restore_cache:
           keys:
             - cache-{{ .Environment.CIRCLE_SHA1 }}
             - terminus-cache
-      - checkout:
-          path: /home/circleci/d8-circleci
       - run: echo 'StrictHostKeyChecking no' > ~/.ssh/config
       - run: echo 'export PATH=$HOME/terminus/bin:$PATH' >> $BASH_ENV
       - run:
