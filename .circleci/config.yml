@@ -4,7 +4,7 @@ init: &init
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     DEBUG: "true"
   docker:
-    - image: circleci/php:7.1
+    - image: circleci/php:7.1.19-fpm-node-browsers
 
 version: 2
 jobs:
@@ -12,8 +12,6 @@ jobs:
     <<: *init
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
           key: coder-cache
       - run: echo 'export PATH=$HOME/coder/vendor/bin:$PATH' >> $BASH_ENV
@@ -32,8 +30,6 @@ jobs:
     <<: *init
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
           key: composer-cache
       - run:
@@ -71,8 +67,6 @@ jobs:
     <<: *init
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
           keys:
             - cache-{{ .Environment.CIRCLE_SHA1 }}
