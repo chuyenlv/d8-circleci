@@ -93,7 +93,7 @@ workflows:
             branches:
               only:
                 - master
-                - /feature-.*/
+                - /feature\/D8-.*/
       - build:
           requires:
             - code-sniffers
