@@ -88,7 +88,12 @@ workflows:
   version: 2
   multi-build-flow:
     jobs:
-      - code-sniffers
+      - code-sniffers:
+          filters:
+            branches:
+              only:
+                - master
+                - /feature-.*/
       - build:
           requires:
             - code-sniffers
